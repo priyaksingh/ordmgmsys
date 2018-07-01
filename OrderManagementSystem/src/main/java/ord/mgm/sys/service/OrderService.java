@@ -6,14 +6,16 @@ package ord.mgm.sys.service;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.stereotype.Service;
+
 import ord.mgm.sys.dto.OrderDto;
-import ord.mgm.sys.entity.Order;
 import ord.mgm.sys.exception.OrderProcessingException;
 
 /**
  * @author priya
  *
  */
+@Service
 public interface OrderService {
 	
 	public Optional<OrderDto> createOrder(final String customerId, final OrderDto orderDto) throws OrderProcessingException;
