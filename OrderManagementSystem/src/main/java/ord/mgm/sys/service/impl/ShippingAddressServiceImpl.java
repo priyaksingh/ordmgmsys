@@ -37,6 +37,7 @@ public class ShippingAddressServiceImpl implements ShippingAddressService {
 	 * @see ord.mgm.sys.service.ShippingAddressService#createShippingAddress(ord.mgm.sys.dto.ShippingAddressDto)
 	 */
 	@Override
+	@Transactional
 	public Optional<ShippingAddressDto> createShippingAddress(final ShippingAddressDto shippingAddrDto) throws IllegalArgumentException{
 		logger.info("execute createShippingAddress() method....");
 		Optional<ShippingAddressDto> savedShippingAddressDto = Optional.empty();
