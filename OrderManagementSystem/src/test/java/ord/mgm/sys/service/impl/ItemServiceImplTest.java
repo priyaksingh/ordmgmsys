@@ -5,6 +5,7 @@ package ord.mgm.sys.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -76,7 +77,8 @@ public class ItemServiceImplTest {
 		final ItemDto itemDto = new ItemDto();
 		itemDto.setItemName("Pencil");
 		itemDto.setItemPrice(0.50);
-		itemService.saveItem(itemDto);
+		final Optional<ItemDto> savedItemDto = itemService.saveItem(itemDto);
+		Assert.assertEquals("Pencil", savedItemDto.get().getItemName());
 	}
 
 	//To do need to fix. Was passing but failing now.

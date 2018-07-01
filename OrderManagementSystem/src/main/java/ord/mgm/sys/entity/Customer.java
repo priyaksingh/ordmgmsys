@@ -28,10 +28,10 @@ public class Customer {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name = "customer_id")
+	@Column(name = "customer_id", nullable = false)
 	private String customerId;
 	
-	@Column(name = "customer_pwd")
+	@Column(name = "customer_pwd", nullable = false)
 	private String customerPwd;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "customer", orphanRemoval = true)
