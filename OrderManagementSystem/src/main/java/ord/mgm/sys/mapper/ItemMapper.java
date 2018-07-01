@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import ord.mgm.sys.dto.ItemDto;
@@ -17,13 +18,14 @@ import ord.mgm.sys.entity.Item;
  *
  */
 @Component
-public class ItemMapper {
+@Qualifier("itemMapper")
+public class ItemMapper implements Mapper<Item,ItemDto>{
 	
 	private static final Logger logger = LoggerFactory.getLogger(ItemMapper.class);
 	
 	
-	public Optional<Item> toItem(final ItemDto itemDto) {
-		logger.info("Execute toItem method....");
+	public Optional<Item> toEntity(final ItemDto itemDto) {
+		logger.info("Execute toEntity method....");
 		final Item item = new Item();
 		if(itemDto != null) {
 			item.setItemName(itemDto.getItemName());
@@ -32,8 +34,8 @@ public class ItemMapper {
 		return Optional.of(item);
 	}
 	
-	public Optional<ItemDto> toItemDto(final Item item) {
-		logger.info("Execute toItemDto method....");
+	public Optional<ItemDto> toDto(final Item item) {
+		logger.info("Execute toDto method....");
 		final ItemDto itemDto = new ItemDto();
 		if(item != null) {
 			itemDto.setItemId(item.getId());

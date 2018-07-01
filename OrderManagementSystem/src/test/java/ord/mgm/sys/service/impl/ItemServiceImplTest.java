@@ -38,7 +38,7 @@ public class ItemServiceImplTest {
 	private static final Logger logger = LoggerFactory.getLogger(ItemServiceImplTest.class);
 
 	@Autowired
-	ItemService itemService;
+	private ItemService itemService;
 
 	/**
 	 * @throws java.lang.Exception
