@@ -24,7 +24,6 @@ import ord.mgm.sys.entity.ShippingAddress;
 import ord.mgm.sys.exception.OrderProcessingException;
 import ord.mgm.sys.mapper.Mapper;
 import ord.mgm.sys.repository.CustomerRepository;
-import ord.mgm.sys.repository.OrderDetailRepository;
 import ord.mgm.sys.repository.OrderRepository;
 import ord.mgm.sys.repository.ShippingAddressRepository;
 import ord.mgm.sys.service.OrderService;
@@ -54,9 +53,7 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	@Qualifier("orderMapper")
 	private Mapper<Order, OrderDto> orderMapper;
-	
-	@Autowired
-	private OrderDetailRepository orderDetailRepository;
+
 
 	/*
 	 * (non-Javadoc)
@@ -106,11 +103,6 @@ public class OrderServiceImpl implements OrderService {
 		orderToUpdate.setOrderTotalCost(orderDto.getOrderDetails().stream().mapToDouble(OrderDetailDto::getItemSubTotal).sum());
 		orderToUpdate.setCustomer(fetchedOrderEntityFromDb.get().getCustomer());
 		orderToUpdate.setShippingAddress(shippingAddress.get());
-		
-		//orderToUpdate.getOrderDetails().clear();
-		
-		//Set<OrderDetail> orderDetails = orderDetailRepository.findByOrder(orderToUpdate);
-		//orderToUpdate.setOrderDetails(orderDetails);
 
 		Order savedOrderEntityFromDb = orderRepository.save(orderToUpdate);
 

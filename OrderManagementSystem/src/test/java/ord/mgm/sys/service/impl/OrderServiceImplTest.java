@@ -127,7 +127,7 @@ public class OrderServiceImplTest {
 		orderDto.setOrderDetails(orderDetails);
 		orderDto.setShippingAddressId(shippingAddr.getShippingId());
 		final OrderDto savedOrderFrmDb = orderService.createOrder("priya123", orderDto).get();
-		System.out.println("****Order Placed::"+savedOrderFrmDb);
+		Assert.assertTrue(savedOrderFrmDb.isOrderConfirmed());
 	}
 
 	private List<ItemDto> savedItems() {

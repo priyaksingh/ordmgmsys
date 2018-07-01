@@ -113,7 +113,9 @@ public class BasketServiceImplTest {
 		orderDetailDto.setBasketId(orderDetail.get().getBasketId());
 		orderDetail = basketService.addItemToBasket("priya123", orderDetailDto);
 		
-		System.out.println("*****************************Order Placed*****************************************"+basketService.getAllItemsFromBasket("priya123", orderDetailDto.getBasketId()));
+		Set<OrderDetailDto> orderDetails = basketService.getAllItemsFromBasket("priya123", orderDetailDto.getBasketId());
+		
+		Assert.assertEquals(2, orderDetails.size());
 	}
 
 	@Test
