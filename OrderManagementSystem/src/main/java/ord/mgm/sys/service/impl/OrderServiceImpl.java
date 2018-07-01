@@ -4,6 +4,7 @@
 package ord.mgm.sys.service.impl;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import ord.mgm.sys.entity.Customer;
 import ord.mgm.sys.entity.Order;
 import ord.mgm.sys.entity.OrderDetail;
 import ord.mgm.sys.entity.ShippingAddress;
+import ord.mgm.sys.exception.OrderNotFoundException;
 import ord.mgm.sys.exception.OrderProcessingException;
 import ord.mgm.sys.mapper.Mapper;
 import ord.mgm.sys.repository.CustomerRepository;
@@ -64,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	@Transactional
 	public Optional<OrderDto> createOrder(String customerId, OrderDto orderDto) throws OrderProcessingException {
-		logger.info("Execute addItemToBasket method....");
+		logger.info("Execute createOrder method....");
 		if (customerId == null || customerId.isEmpty() || orderDto == null) {
 			final String errorMsg = "Missing inputs";
 			logger.error(errorMsg);
@@ -118,9 +120,25 @@ public class OrderServiceImpl implements OrderService {
 	 */
 	@Override
 	@Transactional
-	public Set<OrderDto> getAllOrders() throws OrderProcessingException {
-		// TODO Auto-generated method stub
-		return null;
+	public Set<OrderDto> getAllOrders(final String customerId) throws OrderNotFoundException {
+		logger.info("Execute getAllOrders method....");
+		if (customerId == null || customerId.isEmpty()) {
+			final String errorMsg = "Missing inputs";
+			logger.error(errorMsg);
+			throw new IllegalArgumentException(errorMsg);
+		}
+		Optional<Customer> customerFrmDb = customerRepository.findByCustomerId(customerId);
+		if(!customerFrmDb.isPresent()) {
+			throw new OrderNotFoundException("Order not found for customer : "+customerId) ;
+		}
+		Set<Order> allOrdersFromCustomer = orderRepository.findByCustomer(customerFrmDb.get());
+		
+		Set<OrderDto> orders = new HashSet<>();
+		for(Order order : allOrdersFromCustomer) {
+			orders.add(orderMapper.toDto(order).get());
+		}
+		
+		return orders;
 	}
 
 	/*
@@ -131,9 +149,23 @@ public class OrderServiceImpl implements OrderService {
 	 */
 	@Override
 	@Transactional
-	public OrderDto getOrder(String customerId, Long orderId) {
-		// TODO Auto-generated method stub
-		return null;
+	public OrderDto getOrder(String customerId, Long orderId) throws OrderNotFoundException {
+		logger.info("Execute getOrder method....");
+		if (customerId == null || customerId.isEmpty() || orderId == null) {
+			final String errorMsg = "Missing inputs";
+			logger.error(errorMsg);
+			throw new IllegalArgumentException(errorMsg);
+		}
+		
+		// 1st find the order from Db
+		Optional<Order> fetchedOrderEntityFromDb = orderRepository.findById(orderId);
+		
+		if(!fetchedOrderEntityFromDb.isPresent()) {
+			throw new OrderNotFoundException("Order not found.");
+		}
+		
+		logger.info("Found the order with id:{}", fetchedOrderEntityFromDb.get().getOrderId());
+		return orderMapper.toDto(fetchedOrderEntityFromDb.get()).get();
 	}
 
 	private String generateOrderNumber() {

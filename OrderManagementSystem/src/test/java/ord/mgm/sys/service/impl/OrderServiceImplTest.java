@@ -28,6 +28,7 @@ import ord.mgm.sys.dto.OrderDetailDto;
 import ord.mgm.sys.dto.OrderDto;
 import ord.mgm.sys.dto.ShippingAddressDto;
 import ord.mgm.sys.exception.ItemNotFoundException;
+import ord.mgm.sys.exception.OrderNotFoundException;
 import ord.mgm.sys.exception.OrderProcessingException;
 import ord.mgm.sys.service.BasketService;
 import ord.mgm.sys.service.CustomerService;
@@ -129,6 +130,68 @@ public class OrderServiceImplTest {
 		final OrderDto savedOrderFrmDb = orderService.createOrder("priya123", orderDto).get();
 		Assert.assertTrue(savedOrderFrmDb.isOrderConfirmed());
 	}
+	
+	@Test
+	public void testGetOrderWithNull() {
+		try {
+			orderService.getOrder(null, null);
+			Assert.fail();
+		} catch (Exception expected) {
+			Assert.assertEquals("Missing inputs", expected.getMessage());
+		}
+	}
+	
+	@Test
+	public void testGetOrder() throws OrderProcessingException, OrderNotFoundException {
+		shippingAddr = createDummyShippingAddrInDb().get();
+		OrderDto orderDto = new OrderDto();
+		orderDto.setCustomerId(customer.getCustomerId());
+		orderDto.setOrderId(orderDetails.iterator().next().getBasketId());
+		orderDto.setOrderDetails(orderDetails);
+		orderDto.setShippingAddressId(shippingAddr.getShippingId());
+		final OrderDto savedOrderFrmDb = orderService.createOrder("priya123", orderDto).get();
+		
+		final OrderDto fetchedOrderFrmDb = orderService.getOrder("priya123", savedOrderFrmDb.getOrderId());
+		
+		Assert.assertEquals(savedOrderFrmDb.getOrderId(), fetchedOrderFrmDb.getOrderId());
+		
+	}
+	
+	@Test
+	public void testGetAllOrdersWithNull() {
+		try {
+			orderService.getAllOrders(null);
+			Assert.fail();
+		} catch (Exception expected) {
+			Assert.assertEquals("Missing inputs", expected.getMessage());
+		}
+	}
+	
+	@Test
+	public void testGetAllOrders() throws OrderProcessingException, OrderNotFoundException, ItemNotFoundException {
+		shippingAddr = createDummyShippingAddrInDb().get();
+		OrderDto orderDto = new OrderDto();
+		orderDto.setCustomerId(customer.getCustomerId());
+		orderDto.setOrderId(orderDetails.iterator().next().getBasketId());
+		orderDto.setOrderDetails(orderDetails);
+		orderDto.setShippingAddressId(shippingAddr.getShippingId());
+		orderService.createOrder("priya123", orderDto).get();
+		
+		//2nd order
+		orderDetails = anotherOrder();
+		orderDto = new OrderDto();
+		orderDto.setCustomerId(customer.getCustomerId());
+		orderDto.setOrderId(orderDetails.iterator().next().getBasketId());
+		orderDto.setOrderDetails(orderDetails);
+		orderDto.setShippingAddressId(shippingAddr.getShippingId());
+		orderService.createOrder("priya123", orderDto).get();
+		
+		final Set<OrderDto> orders = orderService.getAllOrders("priya123");
+		
+		Assert.assertEquals(2, orders.size());
+		
+	}
+	
 
 	private List<ItemDto> savedItems() {
 		List<ItemDto> itemDtoLst = new ArrayList<>();
@@ -195,6 +258,31 @@ public class OrderServiceImplTest {
 		savedOrderDetail = basketService.addItemToBasket("priya123", orderDetailDto);
 		itemsPushedToBasket.add(savedOrderDetail.get());
 
+		return itemsPushedToBasket;
+	}
+	
+	public Set<OrderDetailDto> anotherOrder() throws ItemNotFoundException, OrderProcessingException {
+		Set<OrderDetailDto> itemsPushedToBasket = new HashSet<>();
+		// 1st item added to basket
+		OrderDetailDto orderDetailDto = new OrderDetailDto();
+		orderDetailDto.setItemId(items.get(2).getItemId());
+		Integer itemQunatity = 2;
+		orderDetailDto.setQuantity(itemQunatity);
+		Double itemPrice = itemQunatity * items.get(0).getItemPrice();
+		orderDetailDto.setItemSubTotal(itemPrice);
+		Optional<OrderDetailDto> savedOrderDetail = basketService.addItemToBasket("priya123", orderDetailDto);
+		itemsPushedToBasket.add(savedOrderDetail.get());
+
+		// 2nd item added to basket
+		orderDetailDto = new OrderDetailDto();
+		orderDetailDto.setItemId(items.get(3).getItemId());
+		itemQunatity = 3;
+		orderDetailDto.setQuantity(itemQunatity);
+		itemPrice = itemQunatity * items.get(1).getItemPrice();
+		orderDetailDto.setItemSubTotal(itemPrice);
+		orderDetailDto.setBasketId(savedOrderDetail.get().getBasketId());
+		savedOrderDetail = basketService.addItemToBasket("priya123", orderDetailDto);
+		itemsPushedToBasket.add(savedOrderDetail.get());
 		return itemsPushedToBasket;
 	}
 
