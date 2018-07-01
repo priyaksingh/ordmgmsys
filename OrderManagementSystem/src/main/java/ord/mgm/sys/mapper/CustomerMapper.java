@@ -21,7 +21,7 @@ import ord.mgm.sys.entity.Customer;
 @Qualifier("customerMapper")
 public class CustomerMapper implements Mapper<Customer,CustomerDto>{
 	
-private static final Logger logger = LoggerFactory.getLogger(CustomerMapper.class);
+	private static final Logger logger = LoggerFactory.getLogger(CustomerMapper.class);
 
 	@Override
 	public Optional<Customer> toEntity(CustomerDto customerDto) {

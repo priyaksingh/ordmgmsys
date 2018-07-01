@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -17,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -33,7 +33,7 @@ import ord.mgm.sys.service.ItemService;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = UnitTestConfig.class, loader = AnnotationConfigContextLoader.class)
 @ActiveProfiles("unittest")
-@DirtiesContext
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class ItemServiceImplTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(ItemServiceImplTest.class);
@@ -80,9 +80,7 @@ public class ItemServiceImplTest {
 		final Optional<ItemDto> savedItemDto = itemService.saveItem(itemDto);
 		Assert.assertEquals("Pencil", savedItemDto.get().getItemName());
 	}
-
-	//To do need to fix. Was passing but failing now.
-	@Ignore
+	
 	@Test
 	public void testGetAllItemsWithNoDataInDb() throws IllegalArgumentException {
 		logger.info("Execute testGetAllItemsWithNoDataInDb.....");

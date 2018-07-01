@@ -25,11 +25,11 @@ public class ShippingAddress {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long shippingId;
 	
-	@Column(name = "shipping_address")
+	@Column(name = "shipping_address", nullable = false)
 	private String shippingAddress;
 	
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "customer_id")
+	@JoinColumn(name = "customer_id", nullable = false)
 	private Customer customer;
 
 	public Long getShippingId() {
