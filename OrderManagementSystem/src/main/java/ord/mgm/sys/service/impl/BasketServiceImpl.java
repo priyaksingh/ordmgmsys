@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -78,13 +79,23 @@ public class BasketServiceImpl implements BasketService {
 			throw new ItemNotFoundException(errorMsg);
 		}
 
-		// 2nd create the basket(order) detail
+		// If adding items to new basket
+		if (orderDetailDto.getBasketId() == null) {
+			return addNewItemToBasket(customerId, orderDetailDto);
+		} // If adding items to existing basket
+		else {
+			return updateItemToBasket(customerId, orderDetailDto);
+		}
+	}
+
+	private Optional<OrderDetailDto> addNewItemToBasket(final String customerId, final OrderDetailDto orderDetailDto) throws OrderProcessingException {
+
 		OrderDto orderDto = new OrderDto();
 		orderDto.setCustomerId(customerId);
 		orderDto.setOrderConfirmed(false);
-		final Set<OrderDetailDto> orderDetailDtoSet = new HashSet<>();
 
 		// 3rd add the item to basket
+		Set<OrderDetailDto> orderDetailDtoSet = new HashSet<>();
 		orderDetailDtoSet.add(orderDetailDto);
 		orderDto.setOrderDetails(orderDetailDtoSet);
 		orderDto.setOrderTotalCost(orderDetailDto.getItemSubTotal());
@@ -109,6 +120,30 @@ public class BasketServiceImpl implements BasketService {
 		return orderDetailMapper.toDto(savedOrderFromDb.getOrderDetails().iterator().next());
 	}
 
+	private Optional<OrderDetailDto> updateItemToBasket(final String customerId, final OrderDetailDto orderDetailDto)
+			throws OrderProcessingException {
+		
+		Optional<Order> orderFromDb = orderRepository.findById(orderDetailDto.getBasketId());
+		if (!orderFromDb.isPresent()) {
+			throw new OrderProcessingException("Error updating items to basket basket.");
+		}
+		
+		//Get all exiting items from basket
+		Set<OrderDetail> existingOrderDetails = orderFromDb.get().getOrderDetails();
+		//Add new item to existing basket
+		existingOrderDetails.add(orderDetailMapper.toEntity(orderDetailDto).get());
+		//Update the total order cost
+		Double totalOrderCost = existingOrderDetails.stream().mapToDouble(OrderDetail::getItemSubTotal).sum();
+		orderFromDb.get().setOrderTotalCost(totalOrderCost);
+
+		// 7th persist the basket in db.
+		final Order savedOrderFromDb = orderRepository.save(orderFromDb.get());
+
+		Predicate<OrderDetail> isMatchingItem = (orderDetail) -> orderDetail.getItem().getId().equals(orderDetailDto.getItemId());
+		
+		return orderDetailMapper.toDto(savedOrderFromDb.getOrderDetails().stream().filter(isMatchingItem).findAny().get());
+	}
+
 	@Override
 	@Transactional
 	public boolean deleteItemFromBasket(String customerId, Long basketId, Long itemId)
@@ -126,63 +161,65 @@ public class BasketServiceImpl implements BasketService {
 			logger.error(errorMsg);
 			throw new ItemNotFoundException(errorMsg);
 		}
-		//2nd find the basket
+		// 2nd find the basket
 		Optional<Order> orderFromDb = orderRepository.findById(basketId);
 		if (!orderFromDb.isPresent()) {
 			final String errorMsg = "Basket cannot be found";
 			logger.error(errorMsg);
 			throw new ItemNotFoundException(errorMsg);
 		}
-		
-		Optional<OrderDetail> orderDetail = orderDetailRepository.findByOrderAndItem(orderFromDb.get(), itemfromDb.get());
-		if(!orderDetail.isPresent()) {
+
+		Optional<OrderDetail> orderDetail = orderDetailRepository.findByOrderAndItem(orderFromDb.get(),
+				itemfromDb.get());
+		if (!orderDetail.isPresent()) {
 			final String errorMsg = "Item not in inventory";
 			logger.error(errorMsg);
 			throw new ItemNotFoundException(errorMsg);
 		}
-		
-		logger.info("Item:{} with id:{} found in the basket:{}",itemfromDb.get().getItemName(), itemfromDb.get().getId(),basketId);
-		
-		//remove single item from basket
-		if(orderDetail.get().getQuantity() > 1) {
+
+		logger.info("Item:{} with id:{} found in the basket:{}", itemfromDb.get().getItemName(),
+				itemfromDb.get().getId(), basketId);
+
+		// remove single item from basket
+		if (orderDetail.get().getQuantity() > 1) {
 			logger.debug("Item with multiple quantity found, decrementing the quantity");
 			Integer quantity = orderDetail.get().getQuantity();
 			orderDetail.get().setQuantity(--quantity);
 			orderDetailRepository.save(orderDetail.get());
-		}
-		else {
+		} else {
 			orderDetailRepository.delete(orderDetail.get());
 		}
-		
+
 		return true;
 	}
 
 	@Override
 	@Transactional
-	public Set<OrderDetailDto> getAllItemsFromBasket(final String customerId, final Long basketId) throws OrderProcessingException {
+	public Set<OrderDetailDto> getAllItemsFromBasket(final String customerId, final Long basketId)
+			throws OrderProcessingException {
 		logger.info("Execute deleteItemFromBasket method....");
 		if (customerId == null || customerId.isEmpty() || basketId == null) {
 			final String errorMsg = "Missing inputs";
 			logger.error(errorMsg);
 			throw new IllegalArgumentException(errorMsg);
 		}
-		//1st find the basket
+		// 1st find the basket
 		Optional<Order> orderFromDb = orderRepository.findById(basketId);
 		if (!orderFromDb.isPresent()) {
 			final String errorMsg = "Basket cannot be found";
 			logger.error(errorMsg);
 			throw new OrderProcessingException(errorMsg);
 		}
-		
-		//2nd get all items from basket
+
+		// 2nd get all items from basket
 		Set<OrderDetail> orderDetails = orderDetailRepository.findByOrder(orderFromDb.get());
-		if(orderDetails == null) {
+		if (orderDetails == null) {
 			final String errorMsg = "Invalid basket";
 			logger.error(errorMsg);
 			throw new OrderProcessingException(errorMsg);
 		}
-		
-		Function<OrderDetail,OrderDetailDto> mapToDto = (orderDetail) -> orderDetailMapper.toDto(orderDetail).get();
+
+		Function<OrderDetail, OrderDetailDto> mapToDto = (orderDetail) -> orderDetailMapper.toDto(orderDetail).get();
 		return orderDetails.stream().map(mapToDto).collect(Collectors.toSet());
 	}
 

@@ -38,6 +38,7 @@ public class ItemServiceImpl implements ItemService {
 	private Mapper<Item,ItemDto> itemMapper;
 
 	@Override
+	@Transactional
 	public List<ItemDto> getAllItems() {
 		logger.info("execute getAllItems() method....");
 		Function<Item,ItemDto> mapToItemDto = (item) -> itemMapper.toDto(item).get();

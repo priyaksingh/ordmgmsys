@@ -91,7 +91,31 @@ public class BasketServiceImplTest {
 		Optional<OrderDetailDto> orderDetail = basketService.addItemToBasket("priya123", orderDetailDto);
 		Assert.assertNotNull(orderDetail);
 	}
-	
+
+	@Test
+	public void testAdd2ItemToBasketWithValidObject() throws ItemNotFoundException, OrderProcessingException {
+		OrderDetailDto orderDetailDto = new OrderDetailDto();
+		orderDetailDto.setItemId(items.get(0).getItemId());
+		Integer itemQunatity = 2;
+		orderDetailDto.setQuantity(itemQunatity);
+		Double itemPrice = itemQunatity * items.get(0).getItemPrice();
+		orderDetailDto.setItemSubTotal(itemPrice);
+		Optional<OrderDetailDto> orderDetail = basketService.addItemToBasket("priya123", orderDetailDto);
+		Assert.assertNotNull(orderDetail);
+
+		// 2nd item added to basket
+		orderDetailDto = new OrderDetailDto();
+		orderDetailDto.setItemId(items.get(1).getItemId());
+		itemQunatity = 3;
+		orderDetailDto.setQuantity(itemQunatity);
+		itemPrice = itemQunatity * items.get(1).getItemPrice();
+		orderDetailDto.setItemSubTotal(itemPrice);
+		orderDetailDto.setBasketId(orderDetail.get().getBasketId());
+		orderDetail = basketService.addItemToBasket("priya123", orderDetailDto);
+		
+		System.out.println("*****************************Order Placed*****************************************"+basketService.getAllItemsFromBasket("priya123", orderDetailDto.getBasketId()));
+	}
+
 	@Test
 	public void testDeleteItemFromBasketNullObject() {
 		try {
@@ -101,7 +125,7 @@ public class BasketServiceImplTest {
 			Assert.assertEquals("Missing inputs", expected.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testDeleteItemFromBasket() throws ItemNotFoundException, OrderProcessingException {
 		OrderDetailDto orderDetailDto = new OrderDetailDto();
@@ -111,10 +135,11 @@ public class BasketServiceImplTest {
 		final Double itemPrice = itemQunatity * items.get(0).getItemPrice();
 		orderDetailDto.setItemSubTotal(itemPrice);
 		Optional<OrderDetailDto> orderDetail = basketService.addItemToBasket("priya123", orderDetailDto);
-		boolean result = basketService.deleteItemFromBasket("priya123", orderDetail.get().getBasketId(), orderDetail.get().getItemId());
+		boolean result = basketService.deleteItemFromBasket("priya123", orderDetail.get().getBasketId(),
+				orderDetail.get().getItemId());
 		Assert.assertTrue(result);
 	}
-	
+
 	@Test
 	public void getAllItemsFromBasketWithNullObject() {
 		try {
@@ -124,7 +149,7 @@ public class BasketServiceImplTest {
 			Assert.assertEquals("Missing inputs", expected.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testAllItemsFromBasketWithValidData() throws ItemNotFoundException, OrderProcessingException {
 		OrderDetailDto orderDetailDto = new OrderDetailDto();
@@ -135,11 +160,10 @@ public class BasketServiceImplTest {
 		orderDetailDto.setItemSubTotal(itemPrice);
 		Optional<OrderDetailDto> orderDetail = basketService.addItemToBasket("priya123", orderDetailDto);
 		Set<OrderDetailDto> result = basketService.getAllItemsFromBasket("priya123", orderDetail.get().getBasketId());
-		Assert.assertEquals(1,result.size());
-		Assert.assertEquals(orderDetail.get().getQuantity(),result.iterator().next().getQuantity());
-		Assert.assertEquals(orderDetail.get().getItemId(),result.iterator().next().getItemId());
+		Assert.assertEquals(1, result.size());
+		Assert.assertEquals(orderDetail.get().getQuantity(), result.iterator().next().getQuantity());
+		Assert.assertEquals(orderDetail.get().getItemId(), result.iterator().next().getItemId());
 	}
-	
 
 	private List<ItemDto> savedItems() {
 		List<ItemDto> itemDtoLst = new ArrayList<>();

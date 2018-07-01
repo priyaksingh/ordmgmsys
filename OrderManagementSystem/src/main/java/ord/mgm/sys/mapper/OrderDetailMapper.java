@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import ord.mgm.sys.dto.CustomerDto;
 import ord.mgm.sys.dto.OrderDetailDto;
+import ord.mgm.sys.entity.Item;
+import ord.mgm.sys.entity.Order;
 import ord.mgm.sys.entity.OrderDetail;
-import ord.mgm.sys.repository.CustomerRepository;
+import ord.mgm.sys.repository.ItemRepository;
+import ord.mgm.sys.repository.OrderRepository;
 
 /**
  * @author priya
@@ -22,20 +24,33 @@ import ord.mgm.sys.repository.CustomerRepository;
  */
 @Component
 @Qualifier("orderDetailMapper")
-public class OrderDetailMapper implements Mapper<OrderDetail,OrderDetailDto>{
-	
+public class OrderDetailMapper implements Mapper<OrderDetail, OrderDetailDto> {
+
 	private static final Logger logger = LoggerFactory.getLogger(OrderDetailMapper.class);
+
+	@Autowired
+	private ItemRepository itemRepository;
 	
 	@Autowired
-	CustomerRepository customerRepository;
+	private OrderRepository orderRepository;
 
 	@Override
 	public Optional<OrderDetail> toEntity(OrderDetailDto orderDetailDto) {
 		logger.info("Execute toEntity method....");
 		final OrderDetail orderDetail = new OrderDetail();
-		if(orderDetailDto != null) {
+		if (orderDetailDto != null) {
+			if (orderDetailDto.getOrderDetailId() != null)
+				orderDetail.setId(orderDetailDto.getOrderDetailId());
 			orderDetail.setQuantity(orderDetailDto.getQuantity());
 			orderDetail.setItemSubTotal(orderDetailDto.getItemSubTotal());
+			if (orderDetailDto.getItemId() != null) {
+				Optional<Item> itemFrmDb = itemRepository.findById(orderDetailDto.getItemId());
+				orderDetail.setItem(itemFrmDb.get());
+			}
+			if(orderDetailDto.getBasketId() != null) {
+				Optional<Order> ordFrmDb = orderRepository.findById(orderDetailDto.getBasketId());
+				orderDetail.setOrder(ordFrmDb.get());
+			}
 		}
 		return Optional.of(orderDetail);
 	}
@@ -44,10 +59,10 @@ public class OrderDetailMapper implements Mapper<OrderDetail,OrderDetailDto>{
 	public Optional<OrderDetailDto> toDto(OrderDetail OrderDetailEntity) {
 		logger.info("Execute toDto method....");
 		final OrderDetailDto orderDetailDto = new OrderDetailDto();
-		if(OrderDetailEntity != null) {
+		if (OrderDetailEntity != null) {
 			orderDetailDto.setItemId(OrderDetailEntity.getItem().getId());
 			orderDetailDto.setOrderDetailId(OrderDetailEntity.getId());
-			//this is like a basket id. At a item user can have only one basket
+			// this is like a basket id. At a item user can have only one basket
 			orderDetailDto.setBasketId(OrderDetailEntity.getOrder().getOrderId());
 			orderDetailDto.setItemSubTotal(OrderDetailEntity.getItemSubTotal());
 			orderDetailDto.setQuantity(OrderDetailEntity.getQuantity());

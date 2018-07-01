@@ -38,6 +38,9 @@ public class OrderMapper implements Mapper<Order,OrderDto>{
 		logger.info("Execute toEntity method....");
 		final Order order = new Order();
 		if(orderDto != null) {
+			if(orderDto.getOrderId() != null) {
+				order.setOrderId(orderDto.getOrderId());
+			}
 			if(orderDto.getOrderNumber() != null)
 				order.setOrderNumber(orderDto.getOrderNumber());
 			if(orderDto.getOrderDate() != null)
@@ -64,7 +67,9 @@ public class OrderMapper implements Mapper<Order,OrderDto>{
 			Set<OrderDetail> orderDetails = entity.getOrderDetails();
 			Function<OrderDetail,OrderDetailDto> mapToDto = (orderDetail) -> orderDetailMapper.toDto(orderDetail).get();
 			orderDto.setOrderDetails(orderDetails.stream().map(mapToDto).collect(Collectors.toSet()));
+			if(entity.getShippingAddress() != null) {
 			orderDto.setShippingAddressId(entity.getShippingAddress().getShippingId());
+			}
 			orderDto.setCustomerId(entity.getCustomer().getCustomerId());
 		}
 		return Optional.of(orderDto);
