@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.springframework.data.repository.CrudRepository;
 
+import ord.mgm.sys.entity.Item;
 import ord.mgm.sys.entity.Order;
 import ord.mgm.sys.entity.OrderDetail;
 
@@ -17,7 +18,7 @@ import ord.mgm.sys.entity.OrderDetail;
  */
 public interface OrderDetailRepository extends CrudRepository<OrderDetail, Long> {
 	
-	public Optional<OrderDetail> findById(final Long primaryKey);
+	public Optional<OrderDetail> findByOrderAndItem(final Order order, final Item item);
 	
 	public Set<OrderDetail> findByOrder(final Order order);
 

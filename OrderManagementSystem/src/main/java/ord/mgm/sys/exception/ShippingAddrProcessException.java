@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ord.mgm.sys.mapper;
+package ord.mgm.sys.exception;
 
 /**
  * @author priya

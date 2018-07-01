@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import ord.mgm.sys.entity.OrderDetail;
-
 public class OrderDto {
 	
 	private Long orderId;
@@ -16,11 +14,13 @@ public class OrderDto {
 	
 	private String customerId;
 	
+	private Long shippingAddressId;
+	
 	private boolean orderConfirmed;
 	
-	private Set<OrderDetail> orderDetails = new HashSet<>();
+	private Set<OrderDetailDto> orderDetails = new HashSet<>();
 	
-	private Double orderCostTotal;
+	private Double orderTotalCost;
 
 	public Long getOrderId() {
 		return orderId;
@@ -62,27 +62,35 @@ public class OrderDto {
 		this.orderConfirmed = orderConfirmed;
 	}
 
-	public Set<OrderDetail> getOrderDetails() {
+	public Set<OrderDetailDto> getOrderDetails() {
 		return orderDetails;
 	}
 
-	public void setOrderDetails(Set<OrderDetail> orderDetails) {
+	public void setOrderDetails(Set<OrderDetailDto> orderDetails) {
 		this.orderDetails = orderDetails;
 	}
 
+	public Long getShippingAddressId() {
+		return shippingAddressId;
+	}
+
+	public void setShippingAddressId(Long shippingAddressId) {
+		this.shippingAddressId = shippingAddressId;
+	}
+	
 	@Override
 	public String toString() {
 		return "OrderDto [orderId=" + orderId + ", orderNumber=" + orderNumber + ", orderDate=" + orderDate
-				+ ", customerId=" + customerId + ", orderConfirmed=" + orderConfirmed + ", orderDetails=" + orderDetails
-				+ ", orderCostTotal=" + orderCostTotal + "]";
+				+ ", customerId=" + customerId + ", shippingAddressId=" + shippingAddressId + ", orderConfirmed="
+				+ orderConfirmed + ", orderDetails=" + orderDetails + ", orderTotalCost=" + orderTotalCost + "]";
 	}
 
-	public Double getOrderCostTotal() {
-		return orderCostTotal;
+	public Double getOrderTotalCost() {
+		return orderTotalCost;
 	}
 
-	public void setOrderCostTotal(Double orderCostTotal) {
-		this.orderCostTotal = orderCostTotal;
+	public void setOrderTotalCost(Double orderTotalCost) {
+		this.orderTotalCost = orderTotalCost;
 	}
 
 }

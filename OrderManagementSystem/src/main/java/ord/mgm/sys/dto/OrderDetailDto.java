@@ -11,9 +11,10 @@ public class OrderDetailDto {
 
 	private Long orderDetailId;
 	
-	private String orderId;
+	//The order id created is the basket Id
+	private Long basketId;
 	
-	private String itemId;
+	private Long itemId;
 	
 	private Integer quantity;
 	
@@ -27,19 +28,19 @@ public class OrderDetailDto {
 		this.orderDetailId = orderDetailId;
 	}
 
-	public String getOrderId() {
-		return orderId;
+	public Long getBasketId() {
+		return basketId;
 	}
 
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
+	public void setBasketId(Long basketId) {
+		this.basketId = basketId;
 	}
 
-	public String getItemId() {
+	public Long getItemId() {
 		return itemId;
 	}
 
-	public void setItemId(String itemId) {
+	public void setItemId(Long itemId) {
 		this.itemId = itemId;
 	}
 
@@ -61,7 +62,7 @@ public class OrderDetailDto {
 
 	@Override
 	public String toString() {
-		return "OrderDetailDto [orderDetailId=" + orderDetailId + ", orderId=" + orderId + ", itemId=" + itemId
+		return "OrderDetailDto [orderDetailId=" + orderDetailId + ", basketId=" + basketId + ", itemId=" + itemId
 				+ ", quantity=" + quantity + ", itemSubTotal=" + itemSubTotal + "]";
 	}
 	

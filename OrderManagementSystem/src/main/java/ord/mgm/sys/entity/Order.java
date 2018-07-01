@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -23,13 +24,13 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name="order")
+@Table(name="order_table")
 public class Order {
 	
 	@Id
 	@Column(name = "order_id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long orderId;
 	
 	@Column(name = "order_number")
 	private String orderNumber;
@@ -38,21 +39,28 @@ public class Order {
 	private Date orderDate;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "customer_id")
+	@JoinColumn(name = "customer_id", nullable = false)
 	private Customer customer;
 	
-	@Column(name = "order_confirmed")
+	@Column(name = "order_confirmed", nullable = false)
 	private boolean orderConfirmed;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "order", orphanRemoval = true)
 	private Set<OrderDetail> orderDetails = new HashSet<>();
+	
+	@OneToOne
+	@JoinColumn(name = "shipping_id")
+	private ShippingAddress shippingAddress;
+	
+	@Column(name = "order_total_cost")
+	private Double orderTotalCost;
 
-	public Long getId() {
-		return id;
+	public Long getOrderId() {
+		return orderId;
 	}
 
-	public void setId(final Long id) {
-		this.id = id;
+	public void setOrderId(final Long orderId) {
+		this.orderId = orderId;
 	}
 
 	public String getOrderNumber() {
@@ -98,5 +106,21 @@ public class Order {
 
 	public void setOrderConfirmed(boolean orderConfirmed) {
 		this.orderConfirmed = orderConfirmed;
+	}
+
+	public ShippingAddress getShippingAddress() {
+		return shippingAddress;
+	}
+
+	public void setShippingAddress(ShippingAddress shippingAddress) {
+		this.shippingAddress = shippingAddress;
+	}
+
+	public Double getOrderTotalCost() {
+		return orderTotalCost;
+	}
+
+	public void setOrderTotalCost(Double orderTotalCost) {
+		this.orderTotalCost = orderTotalCost;
 	}
 }

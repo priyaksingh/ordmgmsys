@@ -21,7 +21,7 @@ import javax.persistence.Table;
 public class ShippingAddress {
 	
 	@Id
-	@Column(name = "id")
+	@Column(name = "shipping_id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long shippingId;
 	

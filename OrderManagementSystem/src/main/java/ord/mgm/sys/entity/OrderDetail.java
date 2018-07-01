@@ -26,17 +26,17 @@ public class OrderDetail {
 	private Long id;
 	
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "order_id")
+	@JoinColumn(name = "order_id", nullable = false)
 	private Order order;
 	
 	@ManyToOne(optional = false)
-	@JoinColumn(name ="item_id")
+	@JoinColumn(name ="item_id", nullable = false)
 	private Item item;
 	
-	@Column(name = "quantity")
+	@Column(name = "quantity", nullable = false)
 	private Integer quantity;
 	
-	@Column(name = "item_sub_total")
+	@Column(name = "item_sub_total", nullable = false)
 	private Double itemSubTotal;
 
 	public Long getId() {

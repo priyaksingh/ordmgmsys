@@ -3,7 +3,7 @@
  */
 package ord.mgm.sys.repository;
 
-import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.repository.CrudRepository;
 
@@ -15,8 +15,7 @@ import ord.mgm.sys.entity.Order;
  */
 public interface OrderRepository extends CrudRepository<Order, Long> {
 	
-	public Optional<Order> findByCustomer(final String customerId);
-	
-	public Optional<Order> findByCustomerIdAndOrderConfirmed(final String customerId, final boolean orderConfirmed);
+	//Get all orders for a customer
+	public Set<Order> findByCustomer(final String customerId);
 
 }

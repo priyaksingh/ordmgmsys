@@ -149,8 +149,8 @@ public class ItemServiceImplTest {
 
 	private ItemDto createItemDto(final String itemName, final Double itemPrice) {
 		final ItemDto itemDto = new ItemDto();
-		itemDto.setItemName("Pencil");
-		itemDto.setItemPrice(0.50);
+		itemDto.setItemName(itemName);
+		itemDto.setItemPrice(itemPrice);
 		return itemDto;
 	}
 
