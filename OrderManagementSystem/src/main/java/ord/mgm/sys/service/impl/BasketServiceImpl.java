@@ -110,6 +110,7 @@ public class BasketServiceImpl implements BasketService {
 	}
 
 	@Override
+	@Transactional
 	public boolean deleteItemFromBasket(String customerId, Long basketId, Long itemId)
 			throws OrderProcessingException, ItemNotFoundException {
 		logger.info("Execute deleteItemFromBasket method....");
@@ -157,6 +158,7 @@ public class BasketServiceImpl implements BasketService {
 	}
 
 	@Override
+	@Transactional
 	public Set<OrderDetailDto> getAllItemsFromBasket(final String customerId, final Long basketId) throws OrderProcessingException {
 		logger.info("Execute deleteItemFromBasket method....");
 		if (customerId == null || customerId.isEmpty() || basketId == null) {
