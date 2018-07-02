@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ord.mgm.sys.config;
+package ord.mgm.sys;
 
 import java.sql.SQLException;
 import java.util.Properties;

@@ -20,7 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import ord.mgm.sys.config.UnitTestConfig;
+import ord.mgm.sys.UnitTestConfig;
 import ord.mgm.sys.dto.CustomerDto;
 import ord.mgm.sys.dto.ItemDto;
 import ord.mgm.sys.dto.OrderDetailDto;
@@ -34,7 +34,6 @@ import ord.mgm.sys.service.ShippingAddressService;
 
 /**
  * @author priya
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = UnitTestConfig.class, loader = AnnotationConfigContextLoader.class)
@@ -112,9 +111,10 @@ public class BasketServiceImplTest {
 		orderDetailDto.setItemSubTotal(itemPrice);
 		orderDetailDto.setBasketId(orderDetail.get().getBasketId());
 		orderDetail = basketService.addItemToBasket("priya123", orderDetailDto);
-		
-		Set<OrderDetailDto> orderDetails = basketService.getAllItemsFromBasket("priya123", orderDetailDto.getBasketId());
-		
+
+		Set<OrderDetailDto> orderDetails = basketService.getAllItemsFromBasket("priya123",
+				orderDetailDto.getBasketId());
+
 		Assert.assertEquals(2, orderDetails.size());
 	}
 

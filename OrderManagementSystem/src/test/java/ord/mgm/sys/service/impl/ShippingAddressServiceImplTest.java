@@ -18,7 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import ord.mgm.sys.config.UnitTestConfig;
+import ord.mgm.sys.UnitTestConfig;
 import ord.mgm.sys.dto.CustomerDto;
 import ord.mgm.sys.dto.ShippingAddressDto;
 import ord.mgm.sys.service.CustomerService;
@@ -26,17 +26,16 @@ import ord.mgm.sys.service.ShippingAddressService;
 
 /**
  * @author priya
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = UnitTestConfig.class, loader = AnnotationConfigContextLoader.class)
 @ActiveProfiles("unittest")
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class ShippingAddressServiceImplTest {
-	
+
 	@Autowired
 	private ShippingAddressService shippingAddressService;
-	
+
 	@Autowired
 	private CustomerService customerService;
 
@@ -50,13 +49,13 @@ public class ShippingAddressServiceImplTest {
 	@Test
 	public void testCreateShippingAddressWithNullObject() {
 		try {
-		shippingAddressService.createShippingAddress(null);
-		Assert.fail();
-	} catch (IllegalArgumentException expected) {
-		Assert.assertEquals("Missing inputs", expected.getMessage());
+			shippingAddressService.createShippingAddress(null);
+			Assert.fail();
+		} catch (IllegalArgumentException expected) {
+			Assert.assertEquals("Missing inputs", expected.getMessage());
+		}
 	}
-	}
-	
+
 	@Test
 	public void testCreateShippingAddressWithNullData() {
 		try {
@@ -69,7 +68,7 @@ public class ShippingAddressServiceImplTest {
 			Assert.assertTrue(expected.getMessage().contains("not-null property references a null or transient value"));
 		}
 	}
-	
+
 	@Test
 	public void testCreateShippingAddressWithCustomerNotInDb() {
 		try {
@@ -82,25 +81,25 @@ public class ShippingAddressServiceImplTest {
 			Assert.assertTrue(expected.getMessage().contains("not-null property references a null or transient value"));
 		}
 	}
-	
+
 	@Test
 	public void testCreateShippingAddressWithValidData() {
-			final Optional<CustomerDto> customerDto = createDummyCustomerInDb();
-			final ShippingAddressDto shippingAddressDto = new ShippingAddressDto();
-			shippingAddressDto.setCustomerId(customerDto.get().getCustomerId());
-			shippingAddressDto.setShippingAddress("Burleigh Gardens, Woking");
-			Optional<ShippingAddressDto> savedShippingAddrDtoFromDb = shippingAddressService.createShippingAddress(shippingAddressDto);
-			Assert.assertNotNull(savedShippingAddrDtoFromDb);
-			Assert.assertEquals("Burleigh Gardens, Woking", savedShippingAddrDtoFromDb.get().getShippingAddress());
-			Assert.assertEquals("priya123", savedShippingAddrDtoFromDb.get().getCustomerId());
+		final Optional<CustomerDto> customerDto = createDummyCustomerInDb();
+		final ShippingAddressDto shippingAddressDto = new ShippingAddressDto();
+		shippingAddressDto.setCustomerId(customerDto.get().getCustomerId());
+		shippingAddressDto.setShippingAddress("Burleigh Gardens, Woking");
+		Optional<ShippingAddressDto> savedShippingAddrDtoFromDb = shippingAddressService
+				.createShippingAddress(shippingAddressDto);
+		Assert.assertNotNull(savedShippingAddrDtoFromDb);
+		Assert.assertEquals("Burleigh Gardens, Woking", savedShippingAddrDtoFromDb.get().getShippingAddress());
+		Assert.assertEquals("priya123", savedShippingAddrDtoFromDb.get().getCustomerId());
 	}
-	
-	
+
 	private Optional<CustomerDto> createDummyCustomerInDb() {
-			final CustomerDto customerDto = new CustomerDto();
-			customerDto.setCustomerId("priya123");
-			customerDto.setCustomerPwd("priya123");
-			return customerService.createCustomer(customerDto);
+		final CustomerDto customerDto = new CustomerDto();
+		customerDto.setCustomerId("priya123");
+		customerDto.setCustomerPwd("priya123");
+		return customerService.createCustomer(customerDto);
 	}
 
 }

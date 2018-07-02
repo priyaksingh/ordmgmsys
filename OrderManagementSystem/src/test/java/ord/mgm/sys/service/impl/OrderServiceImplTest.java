@@ -21,7 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import ord.mgm.sys.config.UnitTestConfig;
+import ord.mgm.sys.UnitTestConfig;
 import ord.mgm.sys.dto.CustomerDto;
 import ord.mgm.sys.dto.ItemDto;
 import ord.mgm.sys.dto.OrderDetailDto;
@@ -38,7 +38,6 @@ import ord.mgm.sys.service.ShippingAddressService;
 
 /**
  * @author priya
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = UnitTestConfig.class, loader = AnnotationConfigContextLoader.class)
@@ -110,7 +109,7 @@ public class OrderServiceImplTest {
 			orderDto.setOrderDetails(orderDetails);
 			orderDto.setCustomerId("priya123");
 			orderDto.setOrderId(orderDetails.iterator().next().getBasketId());
-			//This shipping addr does not exists in DB
+			// This shipping addr does not exists in DB
 			orderDto.setShippingAddressId(Long.valueOf(1111111));
 			orderService.createOrder("priya123", orderDto);
 			Assert.fail();
@@ -130,7 +129,7 @@ public class OrderServiceImplTest {
 		final OrderDto savedOrderFrmDb = orderService.createOrder("priya123", orderDto).get();
 		Assert.assertTrue(savedOrderFrmDb.isOrderConfirmed());
 	}
-	
+
 	@Test
 	public void testGetOrderWithNull() {
 		try {
@@ -140,7 +139,7 @@ public class OrderServiceImplTest {
 			Assert.assertEquals("Missing inputs", expected.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testGetOrder() throws OrderProcessingException, OrderNotFoundException {
 		shippingAddr = createDummyShippingAddrInDb().get();
@@ -150,13 +149,13 @@ public class OrderServiceImplTest {
 		orderDto.setOrderDetails(orderDetails);
 		orderDto.setShippingAddressId(shippingAddr.getShippingId());
 		final OrderDto savedOrderFrmDb = orderService.createOrder("priya123", orderDto).get();
-		
+
 		final OrderDto fetchedOrderFrmDb = orderService.getOrder("priya123", savedOrderFrmDb.getOrderId());
-		
+
 		Assert.assertEquals(savedOrderFrmDb.getOrderId(), fetchedOrderFrmDb.getOrderId());
-		
+
 	}
-	
+
 	@Test
 	public void testGetAllOrdersWithNull() {
 		try {
@@ -166,7 +165,7 @@ public class OrderServiceImplTest {
 			Assert.assertEquals("Missing inputs", expected.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testGetAllOrders() throws OrderProcessingException, OrderNotFoundException, ItemNotFoundException {
 		shippingAddr = createDummyShippingAddrInDb().get();
@@ -176,8 +175,8 @@ public class OrderServiceImplTest {
 		orderDto.setOrderDetails(orderDetails);
 		orderDto.setShippingAddressId(shippingAddr.getShippingId());
 		orderService.createOrder("priya123", orderDto).get();
-		
-		//2nd order
+
+		// 2nd order
 		orderDetails = anotherOrder();
 		orderDto = new OrderDto();
 		orderDto.setCustomerId(customer.getCustomerId());
@@ -185,13 +184,12 @@ public class OrderServiceImplTest {
 		orderDto.setOrderDetails(orderDetails);
 		orderDto.setShippingAddressId(shippingAddr.getShippingId());
 		orderService.createOrder("priya123", orderDto).get();
-		
+
 		final Set<OrderDto> orders = orderService.getAllOrders("priya123");
-		
+
 		Assert.assertEquals(2, orders.size());
-		
+
 	}
-	
 
 	private List<ItemDto> savedItems() {
 		List<ItemDto> itemDtoLst = new ArrayList<>();
@@ -260,7 +258,7 @@ public class OrderServiceImplTest {
 
 		return itemsPushedToBasket;
 	}
-	
+
 	public Set<OrderDetailDto> anotherOrder() throws ItemNotFoundException, OrderProcessingException {
 		Set<OrderDetailDto> itemsPushedToBasket = new HashSet<>();
 		// 1st item added to basket

@@ -22,13 +22,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import ord.mgm.sys.config.UnitTestConfig;
+import ord.mgm.sys.UnitTestConfig;
 import ord.mgm.sys.dto.ItemDto;
 import ord.mgm.sys.service.ItemService;
 
 /**
  * @author priya
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = UnitTestConfig.class, loader = AnnotationConfigContextLoader.class)
@@ -80,7 +79,7 @@ public class ItemServiceImplTest {
 		final Optional<ItemDto> savedItemDto = itemService.saveItem(itemDto);
 		Assert.assertEquals("Pencil", savedItemDto.get().getItemName());
 	}
-	
+
 	@Test
 	public void testGetAllItemsWithNoDataInDb() throws IllegalArgumentException {
 		logger.info("Execute testGetAllItemsWithNoDataInDb.....");

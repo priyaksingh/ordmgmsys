@@ -18,13 +18,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import ord.mgm.sys.config.UnitTestConfig;
+import ord.mgm.sys.UnitTestConfig;
 import ord.mgm.sys.dto.CustomerDto;
 import ord.mgm.sys.service.CustomerService;
 
 /**
  * @author priya
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = UnitTestConfig.class, loader = AnnotationConfigContextLoader.class)
@@ -51,7 +50,7 @@ public class CustomerServiceImplTest {
 			Assert.assertEquals("Missing inputs", expected.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testCreateCustomerWithNullData() {
 		try {
@@ -64,15 +63,15 @@ public class CustomerServiceImplTest {
 			Assert.assertTrue(expected.getMessage().contains("not-null property references a null or transient value"));
 		}
 	}
-	
+
 	@Test
 	public void testCreateCustomerSuccess() {
-			final CustomerDto customerDto = new CustomerDto();
-			customerDto.setCustomerId("priya123");
-			customerDto.setCustomerPwd("priya123");
-			final Optional<CustomerDto> createCustomer = customerService.createCustomer(customerDto);
-			Assert.assertTrue(createCustomer.isPresent());
-			Assert.assertEquals("priya123", createCustomer.get().getCustomerId());
+		final CustomerDto customerDto = new CustomerDto();
+		customerDto.setCustomerId("priya123");
+		customerDto.setCustomerPwd("priya123");
+		final Optional<CustomerDto> createCustomer = customerService.createCustomer(customerDto);
+		Assert.assertTrue(createCustomer.isPresent());
+		Assert.assertEquals("priya123", createCustomer.get().getCustomerId());
 	}
 
 }
