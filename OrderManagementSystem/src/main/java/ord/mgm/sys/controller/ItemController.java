@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import ord.mgm.sys.dto.ItemDto;
-import ord.mgm.sys.mapper.CustomerMapper;
 import ord.mgm.sys.service.ItemService;
 
 /**
@@ -25,7 +24,7 @@ import ord.mgm.sys.service.ItemService;
 @RequestMapping("/items")
 public class ItemController {
 
-	private static final Logger logger = LoggerFactory.getLogger(CustomerMapper.class);
+	private static final Logger logger = LoggerFactory.getLogger(ItemController.class);
 
 	@Autowired
 	private ItemService itemService;

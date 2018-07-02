@@ -27,11 +27,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ord.mgm.sys.config.OrdMvcAppInitializer;
 import ord.mgm.sys.dto.ItemDto;
-import ord.mgm.sys.exception.ExceptionController;
 import ord.mgm.sys.service.ItemService;
 
 /**
@@ -52,8 +49,6 @@ public class ItemControllerTest {
 	private ItemController itemController;
 
 	private MockMvc mockMvc;
-
-	private ObjectMapper mapper;
 
 	private ItemDto creatDummyItemDtoObj(Long itemId, String itemName, Double itemPrice) {
 		final ItemDto ItemDto = new ItemDto();
@@ -79,7 +74,6 @@ public class ItemControllerTest {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(itemController).setControllerAdvice(new ExceptionController())
 				.build();
-		mapper = new ObjectMapper();
 		logger.info("END --- Controller test set up");
 	}
 
@@ -89,8 +83,8 @@ public class ItemControllerTest {
 		try {
 			final MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/items/")).andReturn();
 			Assert.assertTrue(result.getResponse().getStatus() == HttpStatus.OK.value());
-			System.out.println(result.getResponse().getContentAsString());
-			// Assert.assertTrue(result.getResponse().getContentAsString().contains(randomString));
+			logger.trace(result.getResponse().getContentAsString());
+			Assert.assertTrue(result.getResponse().getContentAsString().contains("Pencil"));
 		} catch (Exception e) {
 			Assert.fail();
 		}

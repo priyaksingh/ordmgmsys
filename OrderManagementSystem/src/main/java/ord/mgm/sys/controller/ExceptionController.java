@@ -1,4 +1,4 @@
-package ord.mgm.sys.exception;
+package ord.mgm.sys.controller;
 
 import java.net.ConnectException;
 
@@ -14,8 +14,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import ord.mgm.sys.exception.ItemNotFoundException;
+import ord.mgm.sys.exception.OrderNotFoundException;
+import ord.mgm.sys.exception.OrderProcessingException;
+import ord.mgm.sys.exception.ShippingAddrProcessException;
+
 @ControllerAdvice(basePackages = { "ord.mgm.sys.controller" })
 public class ExceptionController {
+
 	private static final Logger logger = LoggerFactory.getLogger(ExceptionController.class);
 
 	@ExceptionHandler(EntityNotFoundException.class)
